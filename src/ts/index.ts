@@ -2,26 +2,39 @@ class Keys {
     _voice;
     _a;
     _z;
+    _show: HTMLElement;
+    _key: HTMLElement;
 
     constructor(a: string, z: string) {
         this._a = a.charCodeAt(0)
         this._z = z.charCodeAt(0)
         this._voice = new SpeechSynthesisUtterance()
+        this._show = document.getElementById("show")
+        this._key = document.getElementById("key")
         this.add()
     }
 
     add = () => {
+        let src = document.getElementById("keysHolder")
         for (let i = this._a; i <= this._z; i++) {
             let key: HTMLElement = document.createElement("button")
             key.setAttribute("class", "keys")
             key.setAttribute("data-key", i + "")
-            key.innerText = String.fromCharCode(i) + " " + i;
+            key.setAttribute("title", i + "")
+            key.innerText = String.fromCharCode(i);
             key.addEventListener("click", (e) => {
-                this.sound(parseInt(key.dataset["key"]))
+                let x = key.dataset["key"]
+                this.sound(parseInt(x))
+                this._key.innerText=key.innerText
+                this._show.innerText = x
             })
-            document.body.appendChild(key)
+            src.appendChild(key)
         }
-        addEventListener("keydown", (e) => this.sound(e.keyCode))
+        addEventListener("keydown", (e) => {
+            this._show.innerText = e.keyCode + ""
+            this._key.innerText=e.key.toUpperCase()
+            this.sound(e.keyCode)
+        })
     }
 
     sound = (x: number) => {
